@@ -1,14 +1,17 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include "processor.h"
+#include "RegisterFile.h"
 
-uint32_t Registers[32];
-
-uint32_t ReadRegister(uint8_t r){
-    return Registers[r];
+static inline uint32_t reg_read(Processor *cpu, uint8_t idx)
+{
+    if (idx == 0) return 0;
+    return cpu->registers[idx];
 }
 
-int WriteRegister(uint8_t r, uint32_t data){
-    Registers[r]=data;
-    return 0;
+static inline void reg_write(Processor *cpu, uint8_t idx, uint32_t value)
+{
+    if (idx == 0) return; 
+    cpu->registers[idx] = value;
 }

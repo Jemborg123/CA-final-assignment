@@ -1,5 +1,6 @@
 #include "IsaSim.h"
-
+#include "instruction.h"
+#include "control.h"
 int StateMachine(Processor *CPU){
     switch (CPU->state)
     {
@@ -7,12 +8,10 @@ int StateMachine(Processor *CPU){
         /* code */
         break;
     case IF:
-        /* code */
+        uint32_t instr = fetchInstruction(CPU,CPU->datapath.pc);
+        CPU->state = ID_EX;
         break;
-    case ID:
-        /* code */
-        break;
-    case EX:
+    case ID_EX:
         /* code */
         break;
     case MEM:

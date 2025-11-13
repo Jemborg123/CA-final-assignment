@@ -34,7 +34,7 @@ typedef struct{
 } DataPath;
 
 typedef enum {
-    IDLE, IF, ID, EX, MEM, WB, DONE
+    IDLE, IF, ID_EX, MEM, WB, DONE
 } States;
 
 typedef struct {
@@ -42,9 +42,9 @@ typedef struct {
     unsigned char state;
     
     // Memory and registers
-    uint32_t* instrMem; 
-    uint32_t* dataMem; 
-    uint32_t* registers;
+    uint32_t instrMem[MEMORY_SIZE]; 
+    uint32_t dataMem[MEMORY_SIZE]; 
+    uint32_t registers[NUM_REGISTERS];
     
     // BUUUUUS
     DataPath datapath;

@@ -3,6 +3,7 @@
         ".fantomasignore": "ignore",
         "iosfwd": "c",
         "statemachine.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "registerfile.h": "c"
     }
 }
