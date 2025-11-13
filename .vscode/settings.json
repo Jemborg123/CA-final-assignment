@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        ".fantomasignore": "ignore",
+        "iosfwd": "c",
+        "statemachine.h": "c",
+        "stdint.h": "c"
+    }
+}
