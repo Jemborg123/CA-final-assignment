@@ -33,8 +33,18 @@ int main(int argc, char** argv)
   }
 
   FILE* fptr;
-  uint32_t instr, opcode, rd, rs1, rs2, funct3, funct7, Iimm, Simm, Uimm;
+  int32_t instr, opcode, rd, rs1, rs2, funct3, funct7, Iimm, Simm, Uimm;
   Processor CPU;
+  CPU.datapath.pc = 0;
+  CPU.state = IDLE;
+  for(int i =0; i<MEMORY_SIZE; i++){
+    CPU.instrMem[i]=0;
+  }
+  for(int i = 0; i<NUM_REGISTERS; i++){
+    CPU.registers[i]=0;
+  }
+  CPU.registers[2]=0x7ffffff0;
+  CPU.registers[3]=0x10000000;
   uint8_t n=0;
   fptr = fopen(argv[1], "rb"); //open read binary file
 
@@ -48,18 +58,23 @@ int main(int argc, char** argv)
 
     opcode = instr & 0x7f; 
     rd = (instr >> 7) & 0x01f;
-    rs1 = (instr >> 15) & 0x01f;
-    rs2 = (instr >> 20) & 0x01f;
-    funct3 = (instr >> 12) & 0x007;
-    funct7 = (instr >> 25);
-    Iimm = (instr >> 20);
-    Simm = ((instr >> 6) & 0x01f ) + ((instr >> 20) << 5); 
-    Uimm = (instr >> 12);
+    // rs1 = (instr >> 15) & 0x01f;
+    // rs2 = (instr >> 20) & 0x01f;
+    // funct3 = (instr >> 12) & 0x007;
+    // funct7 = (instr >> 25);
+    // Iimm = (instr >> 20);
+    // Simm = ((instr >> 6) & 0x01f ) + ((instr >> 20) << 5); 
+     Uimm = ((instr >> 12)<<12);
 
-    printf("line: %x,\t Opcode: %x\n", instr,opcode); //print instruction & opcode
+    printf("line: %x,\t Opcode: %x,\t UIMM: %x,\t rd: %x \n", instr,opcode,Uimm,rd); //print instruction & opcode
 
     CPU.instrMem[n]=instr; //save instruction in instructionmemory
-    ++n;
+    n=n+1;
+  }
+
+  CPU.running = 1;
+  while (CPU.running&&CPU.cycle_count<100){
+    CPU.cycle_count++;
     StateMachine(&CPU);
   }
 

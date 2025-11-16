@@ -17,20 +17,20 @@ typedef struct{
     uint8_t regWrite;
     
     // Data wires
-    uint32_t instruction;
+    int32_t instruction;
     uint32_t pc;
-    uint32_t read_data1;
-    uint32_t read_data2;
-    uint32_t alu_result;
-    uint32_t mem_read_data;
-    uint32_t write_back_data;
+    int32_t read_data1;
+    int32_t read_data2;
+    int32_t alu_result;
+    int32_t mem_read_data;
+    int32_t write_back_data;
     
     // Immediate values
-    uint32_t immediate;
+    int32_t immediate;
     
     // Component connections
-    uint32_t alu_a;
-    uint32_t alu_b;   
+    int32_t alu_a;
+    int32_t alu_b;   
 } DataPath;
 
 typedef enum {
@@ -42,9 +42,9 @@ typedef struct {
     unsigned char state;
     
     // Memory and registers
-    uint32_t instrMem[MEMORY_SIZE]; 
-    uint32_t dataMem[MEMORY_SIZE]; 
-    uint32_t registers[NUM_REGISTERS];
+    int32_t instrMem[MEMORY_SIZE]; 
+    int32_t dataMem[MEMORY_SIZE]; 
+    int32_t registers[NUM_REGISTERS];
     
     // BUUUUUS
     DataPath datapath;

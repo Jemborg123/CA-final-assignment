@@ -1,12 +1,19 @@
 
+
+#include <stdlib.h>
+#include <stdio.h>
 #include <stdint.h>
-#include "instruction.h"
+
 #include "processor.h"
+#include "instruction.h"
 
-
-
-uint32_t fetchInstruction(Processor *CPU, uint32_t pc){
-    return CPU->instrMem[pc++];
+int32_t fetchInstruction(Processor *CPU){
+    printf("FETCH INSTRUCTION%d\n",CPU->datapath.pc);
+    int32_t instr = CPU->instrMem[CPU->datapath.pc];
+    printf("instruction: %x\n",instr);
+    CPU->datapath.pc=CPU->datapath.pc+1;
+    
+    return instr;
 }
 
 

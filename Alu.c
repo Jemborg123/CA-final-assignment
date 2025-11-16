@@ -1,8 +1,8 @@
-#include "Alu.h"
-#include "RegisterFile.h"
 #include "processor.h"
+#include "RegisterFile.h"
+#include "Alu.h"
 
-uint32_t alu_execute(uint32_t a, uint32_t b, AluControl ctrl)
+int32_t alu_execute(int32_t a, int32_t b, AluControl ctrl)
 {
     switch (ctrl) {
         case ALU_ADD: return a + b;
@@ -14,7 +14,7 @@ uint32_t alu_execute(uint32_t a, uint32_t b, AluControl ctrl)
     }
 }
 
-void exec_rtype(Processor *cpu, uint32_t instr)
+void exec_rtype(Processor *cpu, int32_t instr)
 {
     uint8_t rd     = (instr >> 7)  & 0x1f;
     uint8_t funct3 = (instr >> 12) & 0x07;
@@ -22,8 +22,8 @@ void exec_rtype(Processor *cpu, uint32_t instr)
     uint8_t rs2    = (instr >> 20) & 0x1f;
     uint8_t funct7 = (instr >> 25);
 
-    uint32_t a = reg_read(cpu, rs1);
-    uint32_t b = reg_read(cpu, rs2);
+    int32_t a = reg_read(cpu, rs1);
+    int32_t b = reg_read(cpu, rs2);
     AluControl alu_ctrl;
 
     switch (funct3) {
@@ -40,9 +40,37 @@ void exec_rtype(Processor *cpu, uint32_t instr)
             return;
     }
 
-    uint32_t result = alu_execute(a, b, alu_ctrl);
+    int32_t result = alu_execute(a, b, alu_ctrl);
     reg_write(cpu, rd, result);
 }
 
+static inline int32_t signext_12(int32_t x)
+{
+    return (int32_t)(x << 20) >> 20;
+}
 
+void exec_itype(Processor *cpu, int32_t instr)
+{
+    uint8_t rd     = (instr >> 7)  & 0x1f;
+    uint8_t funct3 = (instr >> 12) & 0x07;
+    uint8_t rs1    = (instr >> 15) & 0x1f;
+    int32_t imm    = signext_12(instr >> 20);
+
+    int32_t a = reg_read(cpu, rs1);
+    int32_t b = (int32_t)imm;
+    AluControl alu_ctrl;
+
+    switch (funct3) {
+        case 0x0: alu_ctrl = ALU_ADD; break;
+        case 0x4: alu_ctrl = ALU_XOR; break; 
+        case 0x6: alu_ctrl = ALU_OR;  break;
+        case 0x7: alu_ctrl = ALU_AND; break;
+        default:
+            printf("Unsupported I-type funct3=0x%x\n", funct3);
+            return;
+    }
+
+    int32_t result = alu_execute(a, b, alu_ctrl);
+    reg_write(cpu, rd, result);
+}
 

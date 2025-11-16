@@ -4,6 +4,10 @@
         "iosfwd": "c",
         "statemachine.h": "c",
         "stdint.h": "c",
-        "registerfile.h": "c"
+        "registerfile.h": "c",
+        "processor.h": "c",
+        "instruction.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c"
     }
 }

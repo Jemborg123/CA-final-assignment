@@ -1,18 +1,24 @@
+
+#include "RegisterFile.h"
 #include "IsaSim.h"
 #include "instruction.h"
 #include "control.h"
+
 int StateMachine(Processor *CPU){
     switch (CPU->state)
     {
     case IDLE:
-        /* code */
+        CPU->state = IF;
         break;
     case IF:
-        uint32_t instr = fetchInstruction(CPU,CPU->datapath.pc);
+        int32_t instr = fetchInstruction(CPU);
         CPU->state = ID_EX;
         break;
     case ID_EX:
-        /* code */
+        // printf("ID_EX");
+        debug_register(CPU,10);
+        debug_register(CPU,11);
+        step(CPU,instr);
         break;
     case MEM:
         /* code */
@@ -21,7 +27,9 @@ int StateMachine(Processor *CPU){
         /* code */
         break;
     case DONE:
-        /* code */
+        printf("State machine is done");
+        CPU->running = 0;
+        dump_registers(CPU);
         break;
     
     default:

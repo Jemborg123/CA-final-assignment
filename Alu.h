@@ -2,6 +2,9 @@
 #define ALU_H
 
 #include <stdint.h>
+#include "processor.h"
+#include "RegisterFile.h"
+
 
 typedef enum {
     ALU_ADD,
@@ -11,6 +14,8 @@ typedef enum {
     ALU_XOR
 } AluControl;
 
-uint32_t alu_execute(uint32_t a, uint32_t b, AluControl ctrl);
+int32_t alu_execute(int32_t a, int32_t b, AluControl ctrl);
+void exec_rtype(Processor *cpu, int32_t instr);
+void exec_itype(Processor *cpu, int32_t instr);
 
 #endif
