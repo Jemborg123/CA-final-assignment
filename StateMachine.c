@@ -12,13 +12,16 @@ int StateMachine(Processor *CPU){
         break;
     case IF:
         int32_t instr = fetchInstruction(CPU);
-        CPU->state = ID_EX;
+        CPU->state = ID;
         break;
-    case ID_EX:
-        // printf("ID_EX");
+    case ID:
+        decodeInstruction(CPU,instr);
+        CPU->state = EX;
+        break;
+    case EX:
         debug_register(CPU,10);
         debug_register(CPU,11);
-        step(CPU,instr);
+        step(CPU);
         break;
     case MEM:
         /* code */

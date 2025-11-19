@@ -15,7 +15,7 @@ typedef enum {
 } AluControl;
 
 int32_t alu_execute(int32_t a, int32_t b, AluControl ctrl);
-void exec_rtype(Processor *cpu, int32_t instr);
-void exec_itype(Processor *cpu, int32_t instr);
+void exec_rtype(Processor *cpu);
+void exec_itype(Processor *cpu);
 
 #endif

@@ -14,13 +14,13 @@ int32_t alu_execute(int32_t a, int32_t b, AluControl ctrl)
     }
 }
 
-void exec_rtype(Processor *cpu, int32_t instr)
+void exec_rtype(Processor *cpu)
 {
-    uint8_t rd     = (instr >> 7)  & 0x1f;
-    uint8_t funct3 = (instr >> 12) & 0x07;
-    uint8_t rs1    = (instr >> 15) & 0x1f;
-    uint8_t rs2    = (instr >> 20) & 0x1f;
-    uint8_t funct7 = (instr >> 25);
+    uint8_t rd     = cpu->datapath.rd;
+    uint8_t funct3 = cpu->datapath.funct3;
+    uint8_t rs1    = cpu->datapath.rs1;
+    uint8_t rs2    = cpu->datapath.rs2;
+    uint8_t funct7 = cpu->datapath.funct7;
 
     int32_t a = reg_read(cpu, rs1);
     int32_t b = reg_read(cpu, rs2);
@@ -49,12 +49,12 @@ static inline int32_t signext_12(int32_t x)
     return (int32_t)(x << 20) >> 20;
 }
 
-void exec_itype(Processor *cpu, int32_t instr)
+void exec_itype(Processor *cpu)
 {
-    uint8_t rd     = (instr >> 7)  & 0x1f;
-    uint8_t funct3 = (instr >> 12) & 0x07;
-    uint8_t rs1    = (instr >> 15) & 0x1f;
-    int32_t imm    = signext_12(instr >> 20);
+    uint8_t rd     = cpu->datapath.rd;
+    uint8_t funct3 = cpu->datapath.funct3;
+    uint8_t rs1    = cpu->datapath.rs1;
+    int32_t imm    = signext_12(cpu->datapath.Iimm);
 
     int32_t a = reg_read(cpu, rs1);
     int32_t b = (int32_t)imm;

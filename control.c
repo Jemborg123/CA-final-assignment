@@ -2,27 +2,18 @@
 #include "RegisterFile.h"
 #include "Alu.h"
 
-enum types{
-    ITYPE = 0x13,
-    RTYPE = 0x33,
-    ECALL = 0x73,
-    LUI = 0x37
-};
-void step(Processor *cpu, int32_t instr) {
 
-    uint8_t opcode = instr & 0x7f;
-    int32_t rd = (instr >> 7) & 0x01f;
-      
-    switch (opcode)
+void step(Processor *cpu) {      
+    switch (cpu->datapath.opcode)
     {
     case RTYPE:
         printf("RTYPE");
-        exec_rtype(cpu, instr);
+        exec_rtype(cpu);
         cpu->state = IF;
         break;
     case ITYPE:
         printf("ITYPE");
-        exec_itype(cpu, instr);
+        exec_itype(cpu);
         cpu->state = IF;
         break;
     case ECALL:
@@ -31,8 +22,7 @@ void step(Processor *cpu, int32_t instr) {
         break;
     case LUI:
         printf("LUI");
-        int32_t Uimm = ((instr >> 12)<<12);
-        reg_write(cpu,rd,Uimm);
+        reg_write(cpu,cpu->datapath.rd,cpu->datapath.Uimm);
         cpu->state = IF;
         break;
     default:

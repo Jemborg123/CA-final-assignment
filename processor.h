@@ -31,11 +31,31 @@ typedef struct{
     // Component connections
     int32_t alu_a;
     int32_t alu_b;   
+
+    // Instruction parts
+    uint8_t opcode;
+    uint8_t rd;
+    uint8_t rs1;
+    uint8_t rs2;
+    uint8_t funct3;
+    uint8_t funct7;
+    uint16_t Iimm;
+    uint32_t Simm;
+    uint32_t Uimm;
+
 } DataPath;
 
 typedef enum {
-    IDLE, IF, ID_EX, MEM, WB, DONE
+    IDLE, IF, ID, EX, MEM, WB, DONE
 } States;
+
+typedef enum {
+    ITYPE = 0x13,
+    RTYPE = 0x33,
+    ECALL = 0x73,
+    LUI = 0x37,
+    DEFAULT = 0x0
+} InstrTypes;
 
 typedef struct {
     // Processor state

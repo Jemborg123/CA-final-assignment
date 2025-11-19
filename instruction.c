@@ -16,4 +16,14 @@ int32_t fetchInstruction(Processor *CPU){
     return instr;
 }
 
-
+void decodeInstruction(Processor *CPU, uint32_t instr){
+    CPU->datapath.opcode = instr & 0x7f; 
+    CPU->datapath.rd = (instr >> 7) & 0x01f;
+    CPU->datapath.rs1 = (instr >> 15) & 0x01f;
+    CPU->datapath.rs2 = (instr >> 20) & 0x01f;
+    CPU->datapath.funct3 = (instr >> 12) & 0x007;
+    CPU->datapath.funct7 = (instr >> 25);
+    CPU->datapath.Iimm = (instr >> 20);
+    CPU->datapath.Simm = ((instr >> 6) & 0x01f ) + ((instr >> 20) << 5); 
+    CPU->datapath.Uimm = (instr >> 12)<<12;
+}
