@@ -89,7 +89,6 @@ void exec_iloadtype(Processor *cpu)
 }
 
 void exec_stype (Processor *cpu){
-    uint8_t rd     = cpu->datapath.rd;
     uint8_t funct3 = cpu->datapath.funct3;
     uint8_t rs1    = cpu->datapath.rs1;
     uint8_t rs2    = cpu->datapath.rs2;

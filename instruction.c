@@ -26,4 +26,5 @@ void decodeInstruction(Processor *CPU, uint32_t instr){
     CPU->datapath.Iimm = (instr >> 20);
     CPU->datapath.Simm = ((instr >> 6) & 0x01f ) + ((instr >> 20) << 5); 
     CPU->datapath.Uimm = (instr >> 12)<<12;
+    CPU->datapath.Bimm = ((0| (((instr >> 31) & 0x1) << 12) | (((instr >> 25) & 0x3F) << 5) | (((instr >> 8) & 0xF) << 1) | (((instr >> 7) & 0x1) << 11))<<19)>>19;
 }

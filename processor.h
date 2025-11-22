@@ -42,6 +42,7 @@ typedef struct{
     uint16_t Iimm;
     uint32_t Simm;
     uint32_t Uimm;
+    int16_t Bimm;
 
 } DataPath;
 
@@ -54,6 +55,7 @@ typedef enum {
     ILOADTYPE = 0x03,
     RTYPE = 0x33,
     STYPE =0x23,
+    BTYPE = 0x63,
     ECALL = 0x73,
     LUI = 0x37,
     AUIPC = 0x17,
