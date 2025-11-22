@@ -64,7 +64,7 @@ int main(int argc, char** argv)
   }
 
   CPU.running = 1;
-  CPU.cycle_count=0;
+  CPU.cycle_count = 0;
   while (CPU.running&&CPU.cycle_count<1000){
     CPU.cycle_count++;
     StateMachine(&CPU,resultFilename);
