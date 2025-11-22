@@ -11,11 +11,11 @@ int StateMachine(Processor *CPU, char* filename){
         CPU->state = IF;
         break;
     case IF:
-        int32_t instr = fetchInstruction(CPU);
+        CPU->datapath.instruction = fetchInstruction(CPU);
         CPU->state = ID;
         break;
     case ID:
-        decodeInstruction(CPU,instr);
+        decodeInstruction(CPU, CPU->datapath.instruction);
         CPU->state = EX;
         break;
     case EX:

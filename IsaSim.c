@@ -1,19 +1,3 @@
-//To compile (linux/mac): gcc IsaSim.c -o main.out -std=c99
-//To run (linux/mac): ./main.out <file>.bin
-
-//To compile (win): gcc IsaSim.c -o main.exe -std=c99 
-//To run (win): ./main.exe <file>.bin
-
-    // opcode = instr & 0x7f; 
-    // rd = (instr >> 7) & 0x01f;
-    // rs1 = (instr >> 15) & 0x01f;
-    // rs2 = (instr >> 20) & 0x01f;
-    // funct3 = (instr >> 12) & 0x007;
-    // funct7 = (instr >> 25);
-    // Iimm = (instr >> 20);
-    // Simm = ((instr >> 6) & 0x01f ) + ((instr >> 20) << 5); 
-    // Uimm = (instr >> 12);
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -59,29 +43,23 @@ int main(int argc, char** argv)
     CPU.registers[i]=0;
   }
   uint8_t n=0;
-  fptr = fopen(argv[1], "rb"); //open read binary file
+  fptr = fopen(argv[1], "rb");
 
   fseek(fptr, 0, SEEK_END);
   uint32_t sz = ftell(fptr);
   fseek(fptr, 0, SEEK_SET);
   printf("file length:%d\n",sz);
 
-  for(int i = 0 ; i<sz/4;i++){ //load program into instruction memory
-    fread(&instr, sizeof(int), 1, fptr); //read instructions in bin file
+  for(int i = 0 ; i<sz/4;i++){
+    fread(&instr, sizeof(int), 1, fptr);
 
     opcode = instr & 0x7f; 
     rd = (instr >> 7) & 0x01f;
-    // rs1 = (instr >> 15) & 0x01f;
-    // rs2 = (instr >> 20) & 0x01f;
-    // funct3 = (instr >> 12) & 0x007;
-    // funct7 = (instr >> 25);
-    // Iimm = (instr >> 20);
-    // Simm = ((instr >> 6) & 0x01f ) + ((instr >> 20) << 5); 
      Uimm = ((instr >> 12)<<12);
 
-    printf("line: %x,\t Opcode: %x,\t UIMM: %x,\t rd: %x \n", instr,opcode,Uimm,rd); //print instruction & opcode
+    printf("line: %x,\t Opcode: %x,\t UIMM: %x,\t rd: %x \n", instr,opcode,Uimm,rd);
 
-    CPU.instrMem[n]=instr; //save instruction in instructionmemory
+    CPU.instrMem[n]=instr;
     n=n+1;
   }
 
@@ -94,4 +72,3 @@ int main(int argc, char** argv)
   fclose(fptr);
   return NO_ERR;
 }
-
