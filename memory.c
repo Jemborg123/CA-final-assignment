@@ -7,19 +7,28 @@
 
 void storeInMem(Processor *cpu, uint32_t memAdrr, uint8_t rs2,Scontrol ctrl){
 
+uint8_t* byte_mem = (uint8_t*)&cpu->instrMem;
+
+uint32_t offset = memAdrr - 0xa0;
 switch (ctrl)
     {
     case sb:
-        uint32_t valueToStore = reg_read(cpu,rs2);
-        printf("%x is what is stored in rs2",valueToStore);
-        cpu->instrMem[(memAdrr>>2)-1] = valueToStore;
-        printf("\nvalue: %x expected to be at %x\n",cpu->instrMem[(memAdrr>>2)-1],&cpu->instrMem[(memAdrr>>2)-1]);
+        uint8_t byte = reg_read(cpu,rs2);
+        printf("%x is what is stored in rs2",byte);
+        byte_mem[offset] = byte&0xff;
+        printf("\nvalue: %x expected to be at %x\n",byte_mem[memAdrr-0xa0],&byte_mem[memAdrr-0xa0]);
         break;
     case sh:
-        cpu->instrMem[memAdrr>>2] = reg_read(cpu, rs2);
+        uint16_t halfword = reg_read(cpu,rs2);
+        byte_mem[offset-1] = halfword&0xff;
+        byte_mem[offset] = (halfword>>8) &0xff;
         break;
     case sw:
-        cpu->instrMem[memAdrr>>2] = reg_read(cpu, rs2);
+        uint32_t word = reg_read(cpu,rs2);
+        byte_mem[offset-3] = word&0xff;
+        byte_mem[offset-2] = (word>>8) &0xff;
+        byte_mem[offset-1] = (word>>16) &0xff;
+        byte_mem[offset] = (word>>24) &0xff;
         break;
     default:
         printf("STORE COULDNT FIND TYPE\n");
@@ -35,15 +44,15 @@ uint8_t* byte_mem = (uint8_t*)&cpu->instrMem;
     {
     case lb:
         printf("\nloading value from %x\n",&byte_mem[memAdrr]);
-        return (char)byte_mem[memAdrr];
+        return (byte_mem[memAdrr]<<24)>>24;
     case lh:
-        return (short)byte_mem[memAdrr];
+        return ((byte_mem[memAdrr])+(byte_mem[memAdrr+1]<<8)<<16)>>16;
     case lw:
-        return (long)byte_mem[memAdrr];
+        return byte_mem[memAdrr]+(byte_mem[memAdrr+1]<<8)+(byte_mem[memAdrr+2]<<16)+(byte_mem[memAdrr+3]<<24);
     case lbu:
-        return (char)byte_mem[memAdrr];
+        return byte_mem[memAdrr];
     case lhu:
-        return (short)byte_mem[memAdrr];
+        return byte_mem[memAdrr]+(byte_mem[memAdrr+1]<<8);
     
     default:
         break;
@@ -84,7 +93,7 @@ void exec_stype (Processor *cpu){
     uint8_t funct3 = cpu->datapath.funct3;
     uint8_t rs1    = cpu->datapath.rs1;
     uint8_t rs2    = cpu->datapath.rs2;
-    int32_t imm    = signext_12(cpu->datapath.Iimm);
+    int32_t imm    = signext_12(cpu->datapath.Simm);
 
     uint32_t memAdrr = reg_read(cpu, rs1)+imm;
     Scontrol ctrl;
