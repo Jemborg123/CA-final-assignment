@@ -1,6 +1,7 @@
 #include "processor.h"
 #include "RegisterFile.h"
 #include "Alu.h"
+#include "memory.h"
 
 
 void step(Processor *cpu) {      
@@ -16,6 +17,15 @@ void step(Processor *cpu) {
         exec_itype(cpu);
         cpu->state = IF;
         break;
+    case ILOADTYPE:
+        exec_iloadtype(cpu);
+        cpu->state = IF;
+        break;
+    case STYPE:
+        printf("STYPE WAS CALLED\n");
+        exec_stype(cpu);
+        cpu->state = IF;
+        break;
     case ECALL:
         printf("ecall");
         cpu->state = DONE;
@@ -23,6 +33,10 @@ void step(Processor *cpu) {
     case LUI:
         printf("LUI");
         reg_write(cpu,cpu->datapath.rd,cpu->datapath.Uimm);
+        cpu->state = IF;
+        break;
+    case AUIPC:
+        cpu->datapath.pc+cpu->datapath.Uimm;
         cpu->state = IF;
         break;
     default:

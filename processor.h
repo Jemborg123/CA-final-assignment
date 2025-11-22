@@ -51,9 +51,12 @@ typedef enum {
 
 typedef enum {
     ITYPE = 0x13,
+    ILOADTYPE = 0x03,
     RTYPE = 0x33,
+    STYPE =0x23,
     ECALL = 0x73,
     LUI = 0x37,
+    AUIPC = 0x17,
     DEFAULT = 0x0
 } InstrTypes;
 

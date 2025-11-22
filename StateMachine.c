@@ -4,7 +4,7 @@
 #include "instruction.h"
 #include "control.h"
 
-int StateMachine(Processor *CPU){
+int StateMachine(Processor *CPU, char* filename){
     switch (CPU->state)
     {
     case IDLE:
@@ -32,7 +32,7 @@ int StateMachine(Processor *CPU){
     case DONE:
         printf("State machine is done");
         CPU->running = 0;
-        dump_registers(CPU);
+        dump_registers(CPU,filename);
         break;
     
     default:

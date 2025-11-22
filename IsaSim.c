@@ -17,12 +17,25 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "processor.h"
 #include "RegisterFile.h"
 #include "StateMachine.h"
 
 #define NO_ERR 0;
+
+char* generateNameFromInput(char* in){
+  const char *ext = strrchr(in, '.');
+  size_t base_len = ext-in;
+  char* out = malloc(strlen(in)+strlen("Answer")+strlen(".res")+1);
+  memcpy(out, in, base_len);
+  out[base_len] = '\0';
+
+  strcat(out, "Answer");
+  strcat(out, ".res");
+  return out;
+}
 
 int main(int argc, char** argv)
 {
@@ -31,6 +44,8 @@ int main(int argc, char** argv)
       fprintf(stderr, "Usage: %s <program.bin>\n", argv[0]);
       exit(1);
   }
+
+  char* resultFilename = generateNameFromInput(argv[1]);
 
   FILE* fptr;
   int32_t instr, opcode, rd, rs1, rs2, funct3, funct7, Iimm, Simm, Uimm;
@@ -43,8 +58,6 @@ int main(int argc, char** argv)
   for(int i = 0; i<NUM_REGISTERS; i++){
     CPU.registers[i]=0;
   }
-  CPU.registers[2]=0x7ffffff0;
-  CPU.registers[3]=0x10000000;
   uint8_t n=0;
   fptr = fopen(argv[1], "rb"); //open read binary file
 
@@ -73,9 +86,9 @@ int main(int argc, char** argv)
   }
 
   CPU.running = 1;
-  while (CPU.running&&CPU.cycle_count<100){
+  while (CPU.running&&CPU.cycle_count<1000){
     CPU.cycle_count++;
-    StateMachine(&CPU);
+    StateMachine(&CPU,resultFilename);
   }
 
   fclose(fptr);

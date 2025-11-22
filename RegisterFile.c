@@ -16,15 +16,29 @@ void reg_write(Processor *cpu, uint8_t idx, int32_t value)
     cpu->registers[idx] = value;
 }
 
-void dump_registers(Processor *cpu){
+void dump_registers_humanReadable(Processor *cpu){
     FILE *fptr;
 
     // Open a file in writing mode
-    fptr = fopen("res", "w");
+    fptr = fopen("readableres", "w");
     for(int i =0; i<NUM_REGISTERS; i++){
     // Write some text to the file
         fprintf(fptr, "x%d: %x\n", i,cpu->registers[i]);
     }
+    // printf("hello worlds");
+    // fprintf(fptr, "hello world");
+    // Close the file
+    fclose(fptr); 
+}
+
+void dump_registers(Processor *cpu,char* filename){
+    FILE *fptr;
+
+    // Open a file in writing mode
+    fptr = fopen(filename, "wb");
+
+    fwrite(cpu->registers, sizeof(cpu->registers[0]), NUM_REGISTERS, fptr);
+
     // printf("hello worlds");
     // fprintf(fptr, "hello world");
     // Close the file
