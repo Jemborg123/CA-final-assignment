@@ -12,8 +12,8 @@ switch (ctrl)
     case sb:
         uint32_t valueToStore = reg_read(cpu,rs2);
         printf("%x is what is stored in rs2",valueToStore);
-        cpu->instrMem[memAdrr>>2] = valueToStore;
-        printf("\nvalue: %x expected to be at %x\n",cpu->instrMem[memAdrr>>2],&cpu->instrMem[memAdrr>>2]);
+        cpu->instrMem[(memAdrr>>2)-1] = valueToStore;
+        printf("\nvalue: %x expected to be at %x\n",cpu->instrMem[(memAdrr>>2)-1],&cpu->instrMem[(memAdrr>>2)-1]);
         break;
     case sh:
         cpu->instrMem[memAdrr>>2] = reg_read(cpu, rs2);
@@ -34,7 +34,7 @@ uint8_t* byte_mem = (uint8_t*)&cpu->instrMem;
     switch (ctrl)
     {
     case lb:
-        printf("\nloading value from %x\n",byte_mem[memAdrr]);
+        printf("\nloading value from %x\n",&byte_mem[memAdrr]);
         return (char)byte_mem[memAdrr];
     case lh:
         return (short)byte_mem[memAdrr];
