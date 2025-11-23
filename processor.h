@@ -45,6 +45,9 @@ typedef struct{
     int16_t Bimm;
     int32_t Jimm;
 
+    //MUX
+    uint8_t pcmux;
+
 } DataPath;
 
 typedef enum {

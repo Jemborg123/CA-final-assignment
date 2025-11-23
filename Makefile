@@ -9,3 +9,4 @@ resread: readres.c
 
 resreadlinux: readres.c
 	gcc readres.c -o resread.out -std=c99
+	

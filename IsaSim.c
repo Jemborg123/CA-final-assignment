@@ -34,7 +34,8 @@ int main(int argc, char** argv)
   FILE* fptr;
   int32_t instr, opcode, rd, rs1, rs2, funct3, funct7, Iimm, Simm, Uimm;
   Processor CPU;
-  CPU.datapath.pc = 0;
+  CPU.datapath.pc = -1;
+  CPU.datapath.pcmux=0;
   CPU.state = IDLE;
   for(int i =0; i<MEMORY_SIZE; i++){
     CPU.instrMem[i]=0;
@@ -48,7 +49,7 @@ int main(int argc, char** argv)
   fseek(fptr, 0, SEEK_END);
   uint32_t sz = ftell(fptr);
   fseek(fptr, 0, SEEK_SET);
-  printf("file length:%d\n",sz);
+  // printf("file length:%d\n",sz);
 
   for(int i = 0 ; i<sz/4;i++){
     fread(&instr, sizeof(int), 1, fptr);
@@ -57,7 +58,7 @@ int main(int argc, char** argv)
     rd = (instr >> 7) & 0x01f;
      Uimm = ((instr >> 12)<<12);
 
-    printf("line: %x,\t Opcode: %x,\t UIMM: %x,\t rd: %x \n", instr,opcode,Uimm,rd);
+    // printf("line: %x,\t Opcode: %x,\t UIMM: %x,\t rd: %x \n", instr,opcode,Uimm,rd);
 
     CPU.instrMem[n]=instr;
     n=n+1;
@@ -65,7 +66,7 @@ int main(int argc, char** argv)
 
   CPU.running = 1;
   CPU.cycle_count = 0;
-  while (CPU.running&&CPU.cycle_count<1000){
+  while (CPU.running&&CPU.cycle_count<10000){
     CPU.cycle_count++;
     StateMachine(&CPU,resultFilename);
   }

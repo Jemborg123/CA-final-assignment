@@ -9,40 +9,34 @@ void storeInMem(Processor *cpu, int32_t memAdrr, uint8_t rs2,Scontrol ctrl){
 
 uint8_t* byte_mem = (uint8_t*)&cpu->instrMem;
 
-int32_t offset = memAdrr - 0xa0;
-printf("\nBEFORE SWITCH\n");
+int32_t max_byte_addr = MEMORY_SIZE * 4;
+    if (memAdrr < 0 || memAdrr >= max_byte_addr - 3) {
+        printf("ERROR: Store address 0x%x out of bounds (max=0x%x)\n", memAdrr, max_byte_addr);
+        return;
+    }
+
 switch (ctrl)
     {
     case sb:
         uint8_t byte = reg_read(cpu,rs2);
-        printf("%x is what is stored in rs2",byte);
-        byte_mem[offset] = byte&0xff;
-        printf("\nvalue: %x expected to be at %x\n",byte_mem[memAdrr-0xa0],&byte_mem[memAdrr-0xa0]);
+        byte_mem[memAdrr] = byte&0xff;
         break;
     case sh:
         uint16_t halfword = reg_read(cpu,rs2);
-        byte_mem[offset-1] = halfword&0xff;
-        byte_mem[offset] = (halfword>>8) &0xff;
+        byte_mem[memAdrr] = halfword&0xff;
+        byte_mem[memAdrr+1] = (halfword>>8) &0xff;
         break;
     case sw:
         uint32_t word = reg_read(cpu,rs2);
-        printf("\nWORD LOADED\noffset is %d",offset);
-        printf("ra: %d, sp: %d, Bimm %d, Iimm %d, memAdrr %d\n",cpu->registers[1],cpu->registers[2],cpu->datapath.Bimm,cpu->datapath.Iimm,memAdrr);
-        byte_mem[offset-3] = word&0xff;
-        printf("1");
-        byte_mem[offset-2] = (word>>8) &0xff;
-        printf("2");
-        byte_mem[offset-1] = (word>>16) &0xff;
-        printf("3");
-        byte_mem[offset] = (word>>24) &0xff;
-        printf("4");
-        printf("\nWORD STORED\n");
+        byte_mem[memAdrr] = word&0xff;
+        byte_mem[memAdrr+1] = (word>>8) &0xff;
+        byte_mem[memAdrr+2] = (word>>16) &0xff;
+        byte_mem[memAdrr+3] = (word>>24) &0xff;
         break;
     default:
         printf("STORE COULDNT FIND TYPE\n");
         break;
     }
-    printf("STOREINMEM FINISHED\n");
 }
 
 int32_t loadFromMem(Processor *cpu, uint32_t memAdrr, ILOADcontrol ctrl){
@@ -51,7 +45,6 @@ uint8_t* byte_mem = (uint8_t*)&cpu->instrMem;
     switch (ctrl)
     {
     case lb:
-        printf("\nloading value from %x\n",&byte_mem[memAdrr]);
         return (byte_mem[memAdrr]<<24)>>24;
     case lh:
         return ((byte_mem[memAdrr])+(byte_mem[memAdrr+1]<<8)<<16)>>16;
@@ -101,7 +94,6 @@ void exec_stype (Processor *cpu){
     uint8_t rs1    = cpu->datapath.rs1;
     uint8_t rs2    = cpu->datapath.rs2;
     int32_t imm    = signext_12(cpu->datapath.Simm);
-    printf("register data: %d, immediate data: %d",reg_read(cpu, rs1),imm);
     int32_t memAdrr = reg_read(cpu, rs1)+imm;
     Scontrol ctrl;
     switch (funct3) {
@@ -112,6 +104,5 @@ void exec_stype (Processor *cpu){
             printf("Unsupported S-type funct3=0x%x\n", funct3);
             return;
     }
-    printf("EXEC STYPE FINISHED RUNNING\n");
     storeInMem(cpu,memAdrr,rs2,ctrl);
 }

@@ -1,4 +1,3 @@
-
 #include "RegisterFile.h"
 #include "IsaSim.h"
 #include "instruction.h"
@@ -19,8 +18,8 @@ int StateMachine(Processor *CPU, char* filename){
         CPU->state = EX;
         break;
     case EX:
-        debug_register(CPU,10);
-        debug_register(CPU,11);
+        // debug_register(CPU,10);
+        // debug_register(CPU,11);
         step(CPU);
         break;
     case MEM:
