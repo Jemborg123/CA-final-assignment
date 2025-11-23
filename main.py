@@ -4,6 +4,15 @@ import subprocess
 import sys
 from pathlib import Path
 
+def find_executable():
+    """Return path to main.exe or main.out if either exists."""
+    candidates = ["./main.exe", "./main.out"]
+    for exe in candidates:
+        if os.path.isfile(exe):
+            return exe
+    return None
+
+
 def find_bin_files(task_folders):
     """Find all .bin files in the specified task folders."""
     bin_files = []
@@ -45,7 +54,11 @@ def compare_files(file1, file2):
 
 def main():
     # Configuration
-    executable = "./main.exe"
+    executable = find_executable()
+    if executable is None:
+        print("Error: Neither 'main.exe' nor 'main.out' was found!")
+        sys.exit(1)
+
     task_folders = ["task1", "task2", "task3", "task4"]
     
     # Check if executable exists
