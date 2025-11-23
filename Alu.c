@@ -13,6 +13,8 @@ int32_t alu_execute(int32_t a, int32_t b, AluControl ctrl)
         case ALU_SLL: return a << (b & 0x1F);
         case ALU_SRL: return (uint32_t)a >> (b & 0x1F);
         case ALU_SRA: return a >> (b & 0x1F);
+        case ALU_SLT: return (a < b) ? 1 : 0;
+        case ALU_SLTU: return ((uint32_t)a < (uint32_t)b) ? 1 : 0;
         default:      return 0;
     }
 }
@@ -37,6 +39,8 @@ void exec_rtype(Processor *cpu)
                 alu_ctrl = ALU_ADD;
             break;
         case 0x1: alu_ctrl = ALU_SLL; break;
+        case 0x2: alu_ctrl = ALU_SLT; break;
+        case 0x3: alu_ctrl = ALU_SLTU; break;
         case 0x4: alu_ctrl = ALU_XOR; break;
         case 0x5:
             if (funct7 == 0x20)
@@ -64,6 +68,7 @@ void exec_itype(Processor *cpu)
     uint8_t rd     = cpu->datapath.rd;
     uint8_t funct3 = cpu->datapath.funct3;
     uint8_t rs1    = cpu->datapath.rs1;
+    uint8_t funct7 = cpu->datapath.funct7;
     int32_t imm    = signext_12(cpu->datapath.Iimm);
 
     int32_t a = reg_read(cpu, rs1);
@@ -73,8 +78,15 @@ void exec_itype(Processor *cpu)
     switch (funct3) {
         case 0x0: alu_ctrl = ALU_ADD; break;
         case 0x1: alu_ctrl = ALU_SLL; break;
+        case 0x2: alu_ctrl = ALU_SLT; break;
+        case 0x3: alu_ctrl = ALU_SLTU; break;
         case 0x4: alu_ctrl = ALU_XOR; break;
-        case 0x5: alu_ctrl = ALU_SRL; break; 
+        case 0x5:
+            if (funct7 == 0x20)
+                alu_ctrl = ALU_SRA;
+            else 
+                alu_ctrl = ALU_SRL;
+            break; 
         case 0x6: alu_ctrl = ALU_OR;  break;
         case 0x7: alu_ctrl = ALU_AND; break;
         default:
