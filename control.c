@@ -68,17 +68,14 @@ void step(Processor *cpu) {
         cpu->state = IF;
         break;
     case JAL:
-        int32_t Jimm = cpu->datapath.Jimm;
         reg_write(cpu,cpu->datapath.rd,(cpu->datapath.pc*4)+4);
-        cpu->datapath.pc = cpu->datapath.pc+(Jimm/4);
+        cpu->datapath.pc = cpu->datapath.pc+(cpu->datapath.Jimm/4);
         cpu->datapath.pcmux = 1;
         cpu->state = IF;
         break;
     case JALR:
-        uint16_t Iimm = cpu->datapath.Iimm;
-        uint32_t rs1 = reg_read(cpu,cpu->datapath.rs1);
         reg_write(cpu,cpu->datapath.rd,(cpu->datapath.pc*4)+4);
-        cpu->datapath.pc = (rs1+Iimm)/4;
+        cpu->datapath.pc = (reg_read(cpu,cpu->datapath.rs1)+cpu->datapath.Iimm)/4;
         cpu->datapath.pcmux = 1;
         cpu->state = IF;
         break;
@@ -91,8 +88,7 @@ void step(Processor *cpu) {
         cpu->state = IF;
         break;
     case AUIPC:
-        uint32_t val = (cpu->datapath.pc*4)+cpu->datapath.Uimm;
-        reg_write(cpu,cpu->datapath.rd,val);
+        reg_write(cpu,cpu->datapath.rd,(cpu->datapath.pc*4)+cpu->datapath.Uimm);
         cpu->state = IF;
         break;
     default:

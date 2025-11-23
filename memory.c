@@ -14,20 +14,22 @@ int32_t max_byte_addr = MEMORY_SIZE * 4;
         printf("ERROR: Store address 0x%x out of bounds (max=0x%x)\n", memAdrr, max_byte_addr);
         return;
     }
-
+uint8_t byte;
+uint16_t halfword;
+uint32_t word;
 switch (ctrl)
     {
     case sb:
-        uint8_t byte = reg_read(cpu,rs2);
+        byte = reg_read(cpu,rs2);
         byte_mem[memAdrr] = byte&0xff;
         break;
     case sh:
-        uint16_t halfword = reg_read(cpu,rs2);
+        halfword = reg_read(cpu,rs2);
         byte_mem[memAdrr] = halfword&0xff;
         byte_mem[memAdrr+1] = (halfword>>8) &0xff;
         break;
     case sw:
-        uint32_t word = reg_read(cpu,rs2);
+        word = reg_read(cpu,rs2);
         byte_mem[memAdrr] = word&0xff;
         byte_mem[memAdrr+1] = (word>>8) &0xff;
         byte_mem[memAdrr+2] = (word>>16) &0xff;
