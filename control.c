@@ -10,33 +10,38 @@ void exec_btype(Processor *cpu){
     uint8_t rs2    = cpu->datapath.rs2;
     int16_t Bimm  = cpu->datapath.Bimm;
     
-    uint32_t a = reg_read(cpu,rs1);
-    uint32_t b = reg_read(cpu,rs2);
-    int32_t c = reg_read(cpu,rs2);
-    int32_t d = reg_read(cpu,rs2);
+    int32_t a = reg_read(cpu,rs1);
+    int32_t b = reg_read(cpu,rs2);
+    uint32_t c = reg_read(cpu,rs2);
+    uint32_t d = reg_read(cpu,rs2);
     printf("\nBEFORE SWITCH\n");
     switch (funct3) {
         case beq:
             printf("\n%x BEQ\n",a==b);
-            if(a==b) cpu->datapath.pc = cpu->datapath.pc+(Bimm<<2);    
+            printf("\nBIMM: %d\n",Bimm);
+            if(a==b) cpu->datapath.pc = cpu->datapath.pc+(Bimm/4)-1;    
             break;
         case bne: 
             printf("\n%x bne\n",a!=b);
             printf("\nBIMM: %d\n",Bimm);
-            if(a!=b) cpu->datapath.pc = cpu->datapath.pc+(Bimm<<2);  
+            if(a!=b) cpu->datapath.pc = cpu->datapath.pc+(Bimm/4)-1;  
             break;
         case blt: 
             printf("\n%x Blt\n",a<b);
-            if(a<b) cpu->datapath.pc = cpu->datapath.pc+(Bimm<<2);  
+            printf("\nBIMM: %d\n",Bimm);
+            if(a<b) cpu->datapath.pc = cpu->datapath.pc+(Bimm/4)-1;  
             break;
         case bge: 
-            if(a>=b) cpu->datapath.pc = cpu->datapath.pc+(Bimm<<2);  
+            printf("\nBIMM: %d\n",Bimm);
+            if(a>=b) cpu->datapath.pc = cpu->datapath.pc+(Bimm/4)-1;  
             break;
         case bltu:
-            if(c<d) cpu->datapath.pc = cpu->datapath.pc+(Bimm<<2);   
+            printf("\nBIMM: %d\n",Bimm);
+            if(c<d) cpu->datapath.pc = cpu->datapath.pc+(Bimm/4)-1;   
             break;
         case bgeu: 
-            if(c>=d) cpu->datapath.pc = cpu->datapath.pc+(Bimm<<2);  
+            printf("\nBIMM: %d\n",Bimm);
+            if(c>=d) cpu->datapath.pc = cpu->datapath.pc+(Bimm/4)-1;  
             break;
         default:
             return;
@@ -70,6 +75,20 @@ void step(Processor *cpu) {
         exec_btype(cpu);
         cpu->state = IF;
         break;
+    case JAL:
+        int32_t Jimm = cpu->datapath.Jimm;
+        reg_write(cpu,cpu->datapath.rd,cpu->datapath.pc*4+4);
+        cpu->datapath.pc = cpu->datapath.pc+(Jimm/4)-1;
+        cpu->state = IF;
+        break;
+    case JALR:
+        uint16_t Iimm = cpu->datapath.Iimm;
+        uint8_t rs1 = cpu->datapath.rs1;
+        reg_write(cpu,cpu->datapath.rd,cpu->datapath.pc*4+4);
+        cpu->datapath.pc = ((cpu->datapath.rs1+Iimm)/4)-1;
+        cpu->state = IF;
+        break;
+        
     case ECALL:
         printf("ecall");
         cpu->state = DONE;
@@ -80,7 +99,8 @@ void step(Processor *cpu) {
         cpu->state = IF;
         break;
     case AUIPC:
-        cpu->datapath.pc+cpu->datapath.Uimm;
+        uint32_t val = cpu->datapath.pc*4+cpu->datapath.Uimm;
+        reg_write(cpu,cpu->datapath.rd,val);
         cpu->state = IF;
         break;
     default:
