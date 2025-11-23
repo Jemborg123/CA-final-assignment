@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define NUM_REGISTERS 32
-#define MEMORY_SIZE 256
+#define MEMORY_SIZE 262144
 
 typedef struct{
     // Control wires
@@ -39,9 +39,9 @@ typedef struct{
     uint8_t rs2;
     uint8_t funct3;
     uint8_t funct7;
-    uint16_t Iimm;
-    uint32_t Simm;
-    uint32_t Uimm;
+    int16_t Iimm;
+    int32_t Simm;
+    int32_t Uimm;
     int16_t Bimm;
     int32_t Jimm;
 
@@ -71,7 +71,6 @@ typedef struct {
     
     // Memory and registers
     int32_t instrMem[MEMORY_SIZE]; 
-    int32_t dataMem[MEMORY_SIZE]; 
     int32_t registers[NUM_REGISTERS];
     
     // BUUUUUS

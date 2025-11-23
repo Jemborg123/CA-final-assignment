@@ -5,11 +5,12 @@
 #include "memory.h"
 
 
-void storeInMem(Processor *cpu, uint32_t memAdrr, uint8_t rs2,Scontrol ctrl){
+void storeInMem(Processor *cpu, int32_t memAdrr, uint8_t rs2,Scontrol ctrl){
 
 uint8_t* byte_mem = (uint8_t*)&cpu->instrMem;
 
-uint32_t offset = memAdrr - 0xa0;
+int32_t offset = memAdrr - 0xa0;
+printf("\nBEFORE SWITCH\n");
 switch (ctrl)
     {
     case sb:
@@ -25,10 +26,17 @@ switch (ctrl)
         break;
     case sw:
         uint32_t word = reg_read(cpu,rs2);
+        printf("\nWORD LOADED\noffset is %d",offset);
+        printf("ra: %d, sp: %d, Bimm %d, Iimm %d, memAdrr %d\n",cpu->registers[1],cpu->registers[2],cpu->datapath.Bimm,cpu->datapath.Iimm,memAdrr);
         byte_mem[offset-3] = word&0xff;
+        printf("1");
         byte_mem[offset-2] = (word>>8) &0xff;
+        printf("2");
         byte_mem[offset-1] = (word>>16) &0xff;
+        printf("3");
         byte_mem[offset] = (word>>24) &0xff;
+        printf("4");
+        printf("\nWORD STORED\n");
         break;
     default:
         printf("STORE COULDNT FIND TYPE\n");
@@ -93,8 +101,8 @@ void exec_stype (Processor *cpu){
     uint8_t rs1    = cpu->datapath.rs1;
     uint8_t rs2    = cpu->datapath.rs2;
     int32_t imm    = signext_12(cpu->datapath.Simm);
-
-    uint32_t memAdrr = reg_read(cpu, rs1)+imm;
+    printf("register data: %d, immediate data: %d",reg_read(cpu, rs1),imm);
+    int32_t memAdrr = reg_read(cpu, rs1)+imm;
     Scontrol ctrl;
     switch (funct3) {
         case 0x0: ctrl = sb; break;
