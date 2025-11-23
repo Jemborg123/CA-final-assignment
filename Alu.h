@@ -11,7 +11,10 @@ typedef enum {
     ALU_SUB,
     ALU_AND,
     ALU_OR,
-    ALU_XOR
+    ALU_XOR,
+    ALU_SLL, 
+    ALU_SRL, 
+    ALU_SRA
 } AluControl;
 
 int32_t alu_execute(int32_t a, int32_t b, AluControl ctrl);

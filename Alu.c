@@ -10,6 +10,9 @@ int32_t alu_execute(int32_t a, int32_t b, AluControl ctrl)
         case ALU_AND: return a & b;
         case ALU_OR:  return a | b;
         case ALU_XOR: return a ^ b;
+        case ALU_SLL: return a << (b & 0x1F);
+        case ALU_SRL: return (uint32_t)a >> (b & 0x1F);
+        case ALU_SRA: return a >> (b & 0x1F);
         default:      return 0;
     }
 }
@@ -33,7 +36,14 @@ void exec_rtype(Processor *cpu)
             else
                 alu_ctrl = ALU_ADD;
             break;
+        case 0x1: alu_ctrl = ALU_SLL; break;
         case 0x4: alu_ctrl = ALU_XOR; break;
+        case 0x5:
+            if (funct7 == 0x20)
+                alu_ctrl = ALU_SRA;
+            else 
+                alu_ctrl = ALU_SRL;
+            break;
         case 0x6: alu_ctrl = ALU_OR;  break;
         case 0x7: alu_ctrl = ALU_AND; break;
         default:
@@ -62,7 +72,9 @@ void exec_itype(Processor *cpu)
 
     switch (funct3) {
         case 0x0: alu_ctrl = ALU_ADD; break;
-        case 0x4: alu_ctrl = ALU_XOR; break; 
+        case 0x1: alu_ctrl = ALU_SLL; break;
+        case 0x4: alu_ctrl = ALU_XOR; break;
+        case 0x5: alu_ctrl = ALU_SRL; break; 
         case 0x6: alu_ctrl = ALU_OR;  break;
         case 0x7: alu_ctrl = ALU_AND; break;
         default:
